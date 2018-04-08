@@ -6,7 +6,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 export default ({ store }) => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route path="/" component={TodoApp} />
+      <Route path="/:filter?" component={TodoApp} />
     </BrowserRouter>
   </Provider>
 );
