@@ -5,20 +5,21 @@ import { toggleTodo } from '../ActionCreators';
 
 const filterTodos = (todos, filter) => {
   switch (filter) {
-    case "SHOW_ALL":
+    case "all":
       return todos;
-    case "SHOW_ACTIVE":
+    case "active":
       return todos.filter(t => !t.completed);
-    case "SHOW_COMPLETED":
+    case "completed":
       return todos.filter(t => t.completed);
     default:
       return todos;
   }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  console.log("ownProps.filter: ", ownProps.filter);
   return {
-    todos: filterTodos(state.todos, state.visibilityFilter)
+    todos: filterTodos(state.todos, ownProps.filter)
   };
 };
 
