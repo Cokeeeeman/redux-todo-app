@@ -3,23 +3,11 @@ import TodoList from './TodoList';
 import { connect } from 'react-redux';
 import { toggleTodo } from '../ActionCreators';
 import { withRouter } from 'react-router-dom';
-
-const filterTodos = (todos, filter) => {
-  switch (filter) {
-    case "all":
-      return todos;
-    case "active":
-      return todos.filter(t => !t.completed);
-    case "completed":
-      return todos.filter(t => t.completed);
-    default:
-      return todos;
-  }
-};
+import { getVisibleTodos } from '../reducers';
 
 const mapStateToProps = (state, { match }) => {
   return {
-    todos: filterTodos(state.todos, match.params.filter || 'all')
+    todos: getVisibleTodos(state, match.params.filter || 'all')
   };
 };
 
