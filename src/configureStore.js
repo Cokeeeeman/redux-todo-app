@@ -2,6 +2,7 @@ import todoApp from "./reducers";
 import { createStore } from "redux";
 import { loadState, saveState } from './util/localStorage';
 import throttle from 'lodash/throttle';
+import { fetchTodos } from './api';
 
 const addLoggingToDispatch = (store) => {
   const rawDispatch = store.dispatch;
@@ -37,6 +38,10 @@ const configureStore = () => {
       todos: store.getState().todos
     });
   };
+
+  fetchTodos('all').then(todos => {
+    console.log(todos)
+  });
 
   store.subscribe(throttle(saveStateLocal, 1000));
 
