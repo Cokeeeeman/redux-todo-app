@@ -3,6 +3,23 @@ import { createStore } from "redux";
 import { loadState, saveState } from './util/localStorage';
 import throttle from 'lodash/throttle';
 
+const addLoggingToDispatch = (store) => {
+  const rawDispatch = store.dispatch;
+  if (!console.group) {
+    return rawDispatch;
+  }
+
+  return (action) => {
+    console.group(action.type);
+    console.log('%c Prev state: ', 'color: gray', store.getState());
+    console.log('%c Action: ', 'color: blue', action);
+    const returnValue = rawDispatch(action);
+    console.log('%c Next state: ', 'color: green', store.getState());
+    console.groupEnd(action.type);
+    return returnValue;
+  };
+};
+
 const configureStore = () => {
   const preloadedState = loadState();
 
@@ -10,6 +27,10 @@ const configureStore = () => {
     todoApp,
     preloadedState
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    store.dispatch = addLoggingToDispatch(store);
+  }
 
   const saveStateLocal = () => {
     saveState({
