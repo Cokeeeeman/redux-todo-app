@@ -3,32 +3,34 @@ import { createStore } from "redux";
 import { loadState, saveState } from "./util/localStorage";
 import throttle from "lodash/throttle";
 
-const addPromiseSupportToDispatch = (store) => {
-  const rawDispatch = store.dispatch;
-  return (action) => {
-    if (typeof action.then === 'function') {
-      return action.then(rawDispatch);
-    } else {
-      return rawDispatch(action);
-    }
-  };
+const promise = (store) => (next) => (action) => {
+  if (typeof action.then === 'function') {
+    return action.then(next);
+  } else {
+    return next(action);
+  }
 };
 
-const addLoggingToDispatch = store => {
-  const rawDispatch = store.dispatch;
+const logger = (store) => (next) => {
   if (!console.group) {
-    return rawDispatch;
+    return next;
   }
 
-  return action => {
+  return (action) => {
     console.group(action.type);
     console.log("%c Prev state: ", "color: gray", store.getState());
     console.log("%c Action: ", "color: blue", action);
-    const returnValue = rawDispatch(action);
+    const returnValue = next(action);
     console.log("%c Next state: ", "color: green", store.getState());
     console.groupEnd(action.type);
     return returnValue;
   };
+};
+
+const wrapDispatchWithMiddlewares = (store, middlewares) => {
+  middlewares.slice().reverse().forEach((middleware) => {
+    store.dispatch = middleware(store)(store.dispatch);
+  });
 };
 
 const configureStore = () => {
@@ -36,11 +38,13 @@ const configureStore = () => {
 
   const store = createStore(todoApp, preloadedState);
 
+  const middlewares = [ promise ];
+
   if (process.env.NODE_ENV !== "production") {
-    store.dispatch = addLoggingToDispatch(store);
+    middlewares.push(logger);
   }
 
-  store.dispatch = addPromiseSupportToDispatch(store);
+  wrapDispatchWithMiddlewares(store, middlewares);
 
   const saveStateLocal = () => {
     saveState({
