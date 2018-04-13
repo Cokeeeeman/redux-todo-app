@@ -1,4 +1,4 @@
-import todoApp from "./reducers";
+import todos from "./reducers";
 import { createStore, applyMiddleware } from "redux";
 import { createLogger } from 'redux-logger';
 import promise from 'redux-promise';
@@ -12,7 +12,7 @@ const configureStore = () => {
   }
 
   return createStore(
-    todoApp,
+    todos,
     applyMiddleware(...middlewares)
   );
 };
