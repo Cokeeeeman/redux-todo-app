@@ -1,16 +1,41 @@
-const createList = (filter) => (state = [], action) => {
-  if (action.filter !== filter) {
-    return state;
-  }
+import { combineReducers } from 'redux';
 
-  switch (action.type) {
-    case "RECEIVE_TODOS":
-      return action.todos.map(todo => todo.id);
-    default:
+const createList = (filter) => {
+  const ids = (state = [], action) => {
+    if (action.filter !== filter) {
       return state;
-  }
-};
+    }
+
+    switch (action.type) {
+      case "RECEIVE_TODOS":
+        return action.todos.map(todo => todo.id);
+      default:
+        return state;
+    }
+  };
+
+  const isFetching = (state = false, action) => {
+    if (action.filter !== filter) {
+      return state;
+    }
+
+    switch (action.type) {
+      case "REQUEST_TODOS":
+        return true;
+      case "RECEIVE_TODOS":
+        return false;
+      default:
+        return state;
+    }
+  };
+
+  return combineReducers({
+    ids,
+    isFetching
+  });
+}
 
 export default createList;
 
-export const getIds = (state) => state;
+export const getIds = (state) => state.ids;
+export const getFetchingStatus = (state) => state.isFetching;

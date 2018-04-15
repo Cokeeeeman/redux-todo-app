@@ -9,6 +9,13 @@ const receiveTodos = (filter, todos) => {
   };
 };
 
+export const requestTodos = (filter) => {
+  return {
+    type: 'REQUEST_TODOS',
+    filter
+  };
+};
+
 export const fetchTodos = (filter) =>
   api.fetchTodos(filter).then(todos => 
     receiveTodos(filter, todos)
