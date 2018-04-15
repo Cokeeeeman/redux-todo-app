@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import * as api from './api';
 import { getFetchingStatus, getErrorMessage } from './reducers';
 
@@ -30,12 +29,17 @@ export const fetchTodos = (filter) => (dispatch, getState) => {
   );
 }
 
-export const addTodo = (text) => {
-  return {
-    id: uuid(),
-    type: "ADD_TODO",
-    text
-  }
+export const addTodo = (text) => (dispatch) => {
+  dispatch({
+    type: 'ADD_TODO_REQUEST'
+  });
+
+  return api.addTodo(text).then((todo) => {
+    dispatch({
+      type: 'ADD_TODO_SUCCESS',
+      todo
+    });
+  });
 };
 
 export const toggleTodo = (id) => {
