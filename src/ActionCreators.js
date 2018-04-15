@@ -16,10 +16,13 @@ export const requestTodos = (filter) => {
   };
 };
 
-export const fetchTodos = (filter) =>
-  api.fetchTodos(filter).then(todos => 
-    receiveTodos(filter, todos)
-  );
+export const fetchTodos = (filter) => (dispatch) => {
+  dispatch(requestTodos(filter));
+
+  return api.fetchTodos(filter).then(todos => {
+    dispatch(receiveTodos(filter, todos));
+  });
+}
 
 export const addTodo = (text) => {
   return {
