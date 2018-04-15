@@ -1,14 +1,7 @@
 import todos from "./reducers";
 import { createStore, applyMiddleware } from "redux";
 import { createLogger } from 'redux-logger';
-import promise from 'redux-promise';
-
-const thunk = (store) => (next) => (action) => {
-  if (typeof action === 'function') {
-    return action(store.dispatch);
-  }
-  return next(action);
-};
+import thunk from 'redux-thunk';
 
 const configureStore = () => {
   const middlewares = [thunk];

@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4';
 import * as api from './api';
+import { getFetchingStatus } from './reducers';
 
 const receiveTodos = (filter, todos) => {
   return {
@@ -16,7 +17,11 @@ export const requestTodos = (filter) => {
   };
 };
 
-export const fetchTodos = (filter) => (dispatch) => {
+export const fetchTodos = (filter) => (dispatch, getState) => {
+  if (getFetchingStatus(getState(), filter)) {
+    return Promise.resolve();
+  }
+  
   dispatch(requestTodos(filter));
 
   return api.fetchTodos(filter).then(todos => {
