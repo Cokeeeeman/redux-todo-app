@@ -44,9 +44,12 @@ export const addTodo = (text) => (dispatch) => {
   });
 };
 
-export const toggleTodo = (id) => {
-  return {
-    type: "TOGGLE_TODO",
-    id
-  };
+export const toggleTodo = (id) => (dispatch) => {
+  return api.toggleTodo(id).then(todo => {
+    dispatch({
+      type: 'TOGGLE_TODO_SUCCESS',
+      response: normalize(todo, schema.todo)
+    });
+  });
+  
 };
