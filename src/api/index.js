@@ -20,10 +20,6 @@ const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const fetchTodos = (filter) => {
-  if (Math.random() > 0.5) {
-    return Promise.reject(new Error('Boom!'));
-  }
-
   return delay(500).then(() => {
     switch (filter) {
       case 'all':
